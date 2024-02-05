@@ -343,6 +343,7 @@ impl Message {
         self.msg.entities.as_ref()
     }
 
+    // Parse entities from text
     pub fn parse_entities(&self) -> Option<Vec<(String, tl::enums::MessageEntity)>> {
         if let Some(entities) = self.fmt_entities() {
             let text = self.text().encode_utf16().collect::<Vec<_>>();
