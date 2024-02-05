@@ -343,6 +343,29 @@ impl Message {
         self.msg.entities.as_ref()
     }
 
+    pub fn parse_entities(&self) -> Option<Vec<(String, tl::enums::MessageEntity)>> {
+        if let Some(entities) = self.fmt_entities() {
+            let text = self.text().encode_utf16().collect::<Vec<_>>();
+
+            Some(
+                entities
+                    .iter()
+                    .map(|entity| {
+                        (
+                            String::from_utf16_lossy(
+                                &text[entity.offset() as usize
+                                    ..(entity.offset() + entity.length()) as usize],
+                            ),
+                            entity.clone(),
+                        )
+                    })
+                    .collect(),
+            )
+        } else {
+            None
+        }
+    }
+
     /// How many views does this message have, when applicable.
     ///
     /// The same user account can contribute to increment this counter indefinitedly, however
